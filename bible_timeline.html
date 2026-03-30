@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Bible comme histoire — une frise archéologique</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' x='50%25' text-anchor='middle' font-size='42'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F8F6F0; --card-bg: #FFFFFF; --text-main: #2B2B2B; --text-sub: #6E6E6E; --text-faint: #AAA; --line-color: #E0DDD5; --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      --container: 1120px; --radius: 16px; --radius-lg: 20px; --shadow-sm: 0 2px 8px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.05); --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 20px 60px rgba(0,0,0,0.09);
+      --archaeology: #C1563D; --manuscripts: #5A7A55; --accuracy: #C4882A; --structure: #3E6070; --reach: #B86B2A;
+      --archaeology-tint: rgba(193,86,61,0.08); --manuscripts-tint: rgba(90,122,85,0.08); --accuracy-tint: rgba(196,136,42,0.08); --structure-tint: rgba(62,96,112,0.08); --reach-tint: rgba(184,107,42,0.08);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background-color: var(--bg); color: var(--text-main); font-family: 'Lora', serif; font-size: 17px; line-height: 1.7; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    h1, h2, h3, nav, button, .node-date-ui, .go-deeper-label, .links-grid a, .chart-label-row, .header-eyebrow, .chart-title, .node-number, .node-tag, .site-topbar, .site-footer, .footer-quote-card, .footer-note, .footer-quote-author, .footer-signature { font-family: 'Outfit', sans-serif; }
+    .site-topbar { position: sticky; top: 0; z-index: 120; background: rgba(248,246,240,0.93); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line-color); }
+    .site-topbar-inner { max-width: var(--container); margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .site-brand { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-sub); white-space: nowrap; }
+    .site-brand span { color: var(--archaeology); }
+    .home-link { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-sub); padding: 8px 14px; border: 1px solid var(--line-color); border-radius: 999px; transition: var(--transition); }
+    .home-link:hover, .home-link:focus-visible { color: var(--text-main); border-color: var(--text-main); background: rgba(0,0,0,0.02); outline: none; }
+    header { padding: 92px 24px 70px; text-align: center; max-width: 900px; margin: 0 auto; }
+    .header-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 24px; }
+    header h1 { font-size: clamp(2.8rem, 8vw, 5rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 24px; }
+    header h1 em { font-family: 'Lora', serif; font-style: italic; font-weight: 400; color: var(--text-sub); }
+    .header-sub { font-size: 1.1rem; color: var(--text-sub); max-width: 600px; margin: 0 auto 40px; font-style: italic; }
+    .header-rule { width: 60px; height: 3px; background: var(--text-main); margin: 0 auto; border-radius: 2px; }
+    .filter-sticky { position: sticky; top: 53px; z-index: 100; background: rgba(248,246,240,0.93); backdrop-filter: blur(12px); padding: 16px 0; border-bottom: 1px solid var(--line-color); }
+    .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+    .filter-btn { font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 9px 20px; border-radius: 50px; border: 1.5px solid var(--line-color); background: transparent; color: var(--text-sub); cursor: pointer; transition: var(--transition); }
+    .filter-btn:hover { border-color: var(--text-main); color: var(--text-main); }
+    .filter-btn.active[data-filter="all"]         { background: var(--text-main);   color: #fff; border-color: var(--text-main); }
+    .filter-btn.active[data-filter="archaeology"] { background: var(--archaeology); color: #fff; border-color: var(--archaeology); }
+    .filter-btn.active[data-filter="manuscripts"] { background: var(--manuscripts); color: #fff; border-color: var(--manuscripts); }
+    .filter-btn.active[data-filter="accuracy"]    { background: var(--accuracy);    color: #fff; border-color: var(--accuracy); }
+    .filter-btn.active[data-filter="structure"]   { background: var(--structure);   color: #fff; border-color: var(--structure); }
+    .filter-btn.active[data-filter="reach"]       { background: var(--reach);       color: #fff; border-color: var(--reach); }
+    .timeline-wrap { max-width: var(--container); margin: 80px auto 0; position: relative; padding: 0 24px 120px; }
+    .timeline-wrap::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--line-color); transform: translateX(-50%); }
+    .node { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 80px; position: relative; opacity: 0; transform: translateY(36px); transition: opacity 0.75s ease, transform 0.75s ease; }
+    .node.visible { opacity: 1; transform: translateY(0); }
+    .node.hidden-filter { display: none; }
+    .node:nth-child(even) { flex-direction: row-reverse; }
+    .node-content { width: 45%; }
+    .node-spacer  { width: 45%; }
+    .node-dot { position: absolute; left: 50%; top: 28px; width: 18px; height: 18px; border-radius: 50%; background: var(--card-bg); border: 3px solid var(--line-color); transform: translateX(-50%); z-index: 2; transition: border-color 0.3s, transform 0.3s; }
+    .node[data-category="archaeology"] .node-dot { border-color: var(--archaeology); }
+    .node[data-category="manuscripts"]  .node-dot { border-color: var(--manuscripts); }
+    .node[data-category="accuracy"]     .node-dot { border-color: var(--accuracy); }
+    .node[data-category="structure"]    .node-dot { border-color: var(--structure); }
+    .node[data-category="reach"]        .node-dot { border-color: var(--reach); }
+    .node:hover .node-dot { transform: translateX(-50%) scale(1.35); }
+    .card { background: var(--card-bg); padding: 36px 40px 32px; border-radius: var(--radius); box-shadow: var(--shadow-sm); position: relative; transition: box-shadow 0.35s ease, transform 0.35s ease; overflow: hidden; }
+    .card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 16px 16px 0 0; }
+    .node[data-category="archaeology"] .card::before { background: var(--archaeology); }
+    .node[data-category="manuscripts"]  .card::before { background: var(--manuscripts); }
+    .node[data-category="accuracy"]     .card::before { background: var(--accuracy); }
+    .node[data-category="structure"]    .card::before { background: var(--structure); }
+    .node[data-category="reach"]        .card::before { background: var(--reach); }
+    .node-date-ui { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-faint); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .node-tag { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 12px; border-radius: 50px; white-space: nowrap; }
+    .tag-archaeology { background: var(--archaeology-tint); color: var(--archaeology); }
+    .tag-manuscripts  { background: var(--manuscripts-tint);  color: var(--manuscripts); }
+    .tag-accuracy     { background: var(--accuracy-tint);     color: var(--accuracy); }
+    .tag-structure    { background: var(--structure-tint);    color: var(--structure); }
+    .tag-reach        { background: var(--reach-tint);        color: var(--reach); }
+    .node-number { position: absolute; top: 16px; right: 24px; font-size: 3.5rem; font-weight: 800; color: rgba(0,0,0,0.04); line-height: 1; user-select: none; }
+    .node-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 14px; line-height: 1.2; color: var(--text-main); letter-spacing: -0.01em; }
+    .node-body { font-size: 1rem; color: #4A4A4A; margin-bottom: 18px; line-height: 1.8; }
+    .node-body strong { color: var(--text-main); font-weight: 600; }
+    .node-body em { font-style: italic; }
+    .node-quote { border-left: 3px solid var(--line-color); padding: 6px 0 6px 18px; margin: 18px 0; font-style: italic; font-size: 0.97rem; color: var(--text-sub); line-height: 1.6; }
+    .go-deeper { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line-color); }
+    .go-deeper-label { font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-faint); margin-bottom: 10px; }
+    .links-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .links-grid a { font-size: 0.78rem; font-weight: 600; text-decoration: none; color: var(--text-sub); display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border: 1px solid var(--line-color); border-radius: 6px; transition: var(--transition); }
+    .links-grid a:hover { color: var(--text-main); border-color: #BBBBB0; background: rgba(0,0,0,0.02); }
+    .chart-box { margin-top: 22px; background: #FAFAF8; padding: 20px 22px; border-radius: 10px; border: 1px solid var(--line-color); }
+    .chart-title { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 16px; }
+    .chart-row { margin-bottom: 12px; }
+    .chart-row:last-child { margin-bottom: 0; }
+    .chart-label-row { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; margin-bottom: 6px; color: var(--text-sub); }
+    .chart-label-row span:first-child { color: var(--text-main); }
+    .bar-bg { height: 7px; background: #EDECE8; border-radius: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 10px; width: 0%; transition: width 1.6s cubic-bezier(0.4,0,0.2,1); }
+    .site-footer { padding: 28px 24px 80px; }
+    .site-footer-inner { max-width: var(--container); margin: 0 auto; border-top: 1px solid var(--line-color); padding-top: 32px; }
+    .site-footer-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+    .footer-note { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-faint); }
+    .footer-home-link { font-size: 0.78rem; font-weight: 700; color: var(--text-sub); padding: 8px 14px; border: 1px solid var(--line-color); border-radius: 999px; text-decoration: none; transition: var(--transition); }
+    .footer-home-link:hover, .footer-home-link:focus-visible { color: var(--text-main); border-color: var(--text-main); background: rgba(0,0,0,0.02); outline: none; }
+    .footer-quotes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 22px; }
+    .footer-quote-card { background: var(--card-bg); border: 1px solid var(--line-color); border-radius: 14px; padding: 18px 20px; box-shadow: var(--shadow-sm); }
+    .footer-quote-card blockquote { font-size: 0.9rem; color: var(--text-sub); line-height: 1.65; margin: 0 0 10px; font-style: italic; }
+    .footer-quote-author, .footer-quote-ref { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); }
+    .footer-quote-author { margin-top: 2px; }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 0.82rem; color: var(--text-sub); }
+    .footer-signature { letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .intro-card { background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(251,249,244,0.98)); }
+    .intro-card::before { background: linear-gradient(90deg, var(--accuracy), var(--structure)); }
+    .theme-card::before { background: linear-gradient(90deg, var(--reach), var(--archaeology)); }
+    .premium-card { border: 1px solid rgba(0,0,0,0.05); }
+    .reflection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0 8px; }
+    .reflection-item { background: rgba(0,0,0,0.025); border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; padding: 14px 14px 12px; }
+    .reflection-item h3 { font-size: 0.92rem; font-weight: 700; margin: 0 0 6px; color: var(--text-main); }
+    .reflection-item p { font-size: 0.92rem; color: var(--text-sub); line-height: 1.65; }
+    .theme-note { margin-top: 16px; padding: 14px 16px; border-left: 3px solid var(--reach); background: rgba(184,107,42,0.06); border-radius: 0 12px 12px 0; color: var(--text-sub); }
+    .theme-note strong { color: var(--text-main); }
+
+    .card-image { margin: 10px 0 18px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); background: #f1eee7; }
+    .card-image img { width: 100%; height: 220px; object-fit: cover; display: block; }
+    .card-image figcaption { padding: 10px 12px; font-size: 0.78rem; color: var(--text-sub); line-height: 1.45; background: #fbfaf7; border-top: 1px solid rgba(0,0,0,0.05); }
+    @media (max-width: 820px) {
+      .card-image img { height: 180px; }
+    }
+    @media (max-width: 820px) {
+      .timeline-wrap::before { left: 22px; }
+      .node, .node:nth-child(even) { flex-direction: column; padding-left: 52px; margin-bottom: 50px; }
+      .node-content, .node-spacer { width: 100%; }
+      .node-spacer { display: none; }
+      .node-dot { left: 22px; top: 14px; }
+      .card { padding: 26px 22px 22px; border-radius: 12px; }
+      header { padding-top: 60px; }
+      header h1 { font-size: 2.4rem; }
+      .node-number { font-size: 2.5rem; }
+      .site-topbar-inner, .timeline-wrap { padding-left: 20px; padding-right: 20px; }
+      .site-footer { padding-left: 20px; padding-right: 20px; }
+      .site-footer-top { flex-direction: column; align-items: flex-start; }
+      .footer-quotes { grid-template-columns: 1fr; }
+      .reflection-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="site-topbar" role="banner">
+  <div class="site-topbar-inner">
+    <div class="site-brand">Bible <span>✦</span> Parcours</div>
+    <a class="home-link" href="./index.html" aria-label="Retour à l'accueil">Accueil</a>
+  </div>
+</div>
+
+<header>
+  <p class="header-eyebrow">Données archéologiques &amp; solidité historique</p>
+  <h1>La Bible<br><em>comme histoire</em></h1>
+  <p class="header-sub">Quinze découvertes, manuscrits et repères qui inscrivent le texte biblique dans une histoire vérifiable — pour quiconque accepte d’examiner les faits.</p>
+  <div class="header-rule"></div>
+</header>
+
+<div class="filter-sticky">
+  <nav class="filter-container">
+    <button class="filter-btn active" data-filter="all">Toutes les preuves</button>
+    <button class="filter-btn" data-filter="archaeology">⛏ Archéologie</button>
+    <button class="filter-btn" data-filter="manuscripts">📜 Manuscrits</button>
+    <button class="filter-btn" data-filter="accuracy">🎯 Précision</button>
+    <button class="filter-btn" data-filter="structure">🕸 Structure</button>
+    <button class="filter-btn" data-filter="reach">🌍 Diffusion</button>
+  </nav>
+</div>
+
+<main class="timeline-wrap" id="timeline">
+
+
+  <article class="node" data-category="accuracy">
+    <div class="node-content"><div class="card premium-card intro-card">
+      <div class="node-number">∞</div>
+      <figure class="card-image"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%201200%20720%27%3E%0A%3Cdefs%3E%0A%20%20%3ClinearGradient%20id%3D%27g%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%271%27%20y2%3D%271%27%3E%0A%20%20%20%20%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%231c2c3c%27/%3E%0A%20%20%20%20%3Cstop%20offset%3D%2755%25%27%20stop-color%3D%27%23314d63%27/%3E%0A%20%20%20%20%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%23d8a760%27/%3E%0A%20%20%3C/linearGradient%3E%0A%20%20%3CradialGradient%20id%3D%27glow%27%20cx%3D%2750%25%27%20cy%3D%2742%25%27%20r%3D%2740%25%27%3E%0A%20%20%20%20%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%23fff4cf%27%20stop-opacity%3D%270.95%27/%3E%0A%20%20%20%20%3Cstop%20offset%3D%2745%25%27%20stop-color%3D%27%23f0d39b%27%20stop-opacity%3D%270.4%27/%3E%0A%20%20%20%20%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%23ffffff%27%20stop-opacity%3D%270%27/%3E%0A%20%20%3C/radialGradient%3E%0A%3C/defs%3E%0A%3Crect%20width%3D%271200%27%20height%3D%27720%27%20fill%3D%27url%28%23g%29%27/%3E%0A%3Ccircle%20cx%3D%27600%27%20cy%3D%27300%27%20r%3D%27210%27%20fill%3D%27url%28%23glow%29%27/%3E%0A%3Cg%20fill%3D%27%23f9f4e7%27%20opacity%3D%270.9%27%3E%0A%20%20%3Ccircle%20cx%3D%27140%27%20cy%3D%27120%27%20r%3D%273%27/%3E%3Ccircle%20cx%3D%27260%27%20cy%3D%27180%27%20r%3D%272.5%27/%3E%3Ccircle%20cx%3D%27320%27%20cy%3D%2790%27%20r%3D%272%27/%3E%3Ccircle%20cx%3D%27980%27%20cy%3D%27130%27%20r%3D%272.8%27/%3E%3Ccircle%20cx%3D%271080%27%20cy%3D%27210%27%20r%3D%272.2%27/%3E%3Ccircle%20cx%3D%27930%27%20cy%3D%2770%27%20r%3D%271.8%27/%3E%3Ccircle%20cx%3D%27770%27%20cy%3D%27120%27%20r%3D%272.2%27/%3E%3Ccircle%20cx%3D%27580%27%20cy%3D%2785%27%20r%3D%272.2%27/%3E%3Ccircle%20cx%3D%27460%27%20cy%3D%27150%27%20r%3D%271.8%27/%3E%3Ccircle%20cx%3D%27180%27%20cy%3D%27250%27%20r%3D%271.6%27/%3E%0A%3C/g%3E%0A%3Cpath%20d%3D%27M0%20560%20C190%20470%2C%20350%20650%2C%20530%20560%20S890%20430%2C%201200%20560%20L1200%20720%20L0%20720%20Z%27%20fill%3D%27%23f7f0df%27%20opacity%3D%270.95%27/%3E%0A%3Cpath%20d%3D%27M0%20610%20C220%20530%2C%20380%20700%2C%20590%20610%20S930%20500%2C%201200%20620%20L1200%20720%20L0%20720%20Z%27%20fill%3D%27%23ead9b8%27%20opacity%3D%270.75%27/%3E%0A%3Ccircle%20cx%3D%27620%27%20cy%3D%27300%27%20r%3D%275%27%20fill%3D%27%23fff8ea%27/%3E%3Ccircle%20cx%3D%27650%27%20cy%3D%27320%27%20r%3D%273%27%20fill%3D%27%23fff8ea%27/%3E%3Ccircle%20cx%3D%27575%27%20cy%3D%27325%27%20r%3D%273.5%27%20fill%3D%27%23fff8ea%27/%3E%0A%3C/svg%3E" alt="Illustration symbolique des origines, du cosmos et de la question du commencement."><figcaption>Une ouverture symbolique sur les origines, le commencement et le sens.</figcaption></figure>
+      <div class="node-date-ui"><span>Avant l’histoire écrite · ouverture</span><span class="node-tag tag-accuracy">Réflexion</span></div>
+      <h2 class="node-title">Origines, création et questions scientifiques</h2>
+      <p class="node-body">Avant les stèles, les manuscrits et les archives, la Bible ouvre par une question plus fondamentale : <strong>d’où viennent le monde, la vie et l’humanité&nbsp;?</strong> Cette entrée en matière ne remplace pas l’enquête historique ; elle l’élargit. Aujourd’hui encore, des chercheurs, philosophes et croyants réfléchissent à la cohérence possible entre foi biblique et interrogation scientifique, avec prudence et humilité.</p>
+      <div class="reflection-grid" aria-label="Quatre pistes de réflexion sur origines et science">
+        <div class="reflection-item">
+          <h3>1. Le commencement de l’univers</h3>
+          <p>Si l’univers a réellement un commencement, cela relance la question d’une cause initiale, sans prétendre épuiser ce mystère.</p>
+        </div>
+        <div class="reflection-item">
+          <h3>2. Le réglage fin</h3>
+          <p>Les constantes et conditions qui rendent la vie possible paraissent d’une précision remarquable, ce qui nourrit la réflexion autant que l’émerveillement.</p>
+        </div>
+        <div class="reflection-item">
+          <h3>3. L’apparition de la vie</h3>
+          <p>Même dans un univers compatible avec la vie, l’émergence du vivant demeure une question profonde, encore discutée et loin d’être banale.</p>
+        </div>
+        <div class="reflection-item">
+          <h3>4. L’unité de l’humanité</h3>
+          <p>La question d’une origine humaine commune reste majeure pour penser la dignité de tous et l’universalité du message biblique.</p>
+        </div>
+      </div>
+      <p class="node-body">Ce bloc n’apporte pas une démonstration finale ; il propose une <em>porte d’entrée</em> pour réfléchir au lien entre commencement, sens, vérité et vocation humaine.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="SCIENCE_ET_DIEU_VIDEO_URL" target="_blank" rel="noopener noreferrer">▶ Voir la vidéo</a>
+          <a href="SCIENCE_ET_DIEU_BOOK_URL" target="_blank" rel="noopener noreferrer">📘 Aller plus loin</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="archaeology">
+    <div class="node-content"><div class="card">
+      <div class="node-number">01</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Merneptah_Steli_%28cropped%29.jpg/250px-Merneptah_Steli_%28cropped%29.jpg" alt="La stèle de Mérenptah au Musée égyptien du Caire."><figcaption>La stèle de Mérenptah au Musée égyptien du Caire.</figcaption></figure>
+      <div class="node-date-ui"><span>~1208 BCE · Bronze récent</span><span class="node-tag tag-archaeology">Archéologie</span></div>
+      <h2 class="node-title">La stèle de Mérenptah — Israël existe</h2>
+      <p class="node-body">Taillée dans le granit noir pour le pharaon égyptien Mérenptah, cette stèle contient la <strong>plus ancienne mention extra-biblique connue d’« Israël »</strong> comme peuple en Canaan — bien avant ce que certains critiques ont longtemps soutenu.</p>
+      <blockquote class="node-quote">« Israël est dévasté, sa semence n’existe plus. » — stèle de Mérenptah, v. 1208 av. J.-C.</blockquote>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://en.wikipedia.org/wiki/Merneptah_Stele" target="_blank" rel="noopener noreferrer">📖 Wikipédia</a>
+          <a href="https://www.metmuseum.org/toah/hd/mern/hd_mern.htm" target="_blank" rel="noopener noreferrer">🏛 The Met</a>
+          <a href="https://www.bible.ca/archeology/bible-archeology-merneptah-stele-israel-is-laid-waste.htm" target="_blank" rel="noopener noreferrer">🔍 Analyse détaillée</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="archaeology">
+    <div class="node-content"><div class="card">
+      <div class="node-number">02</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/JRSLM_300116_Tel_Dan_Stele_01.jpg/250px-JRSLM_300116_Tel_Dan_Stele_01.jpg" alt="Fragment de la stèle de Tel Dan, exposé à l’Israel Museum."><figcaption>Fragment de la stèle de Tel Dan, exposé à l’Israel Museum.</figcaption></figure>
+      <div class="node-date-ui"><span>~850 BCE · Âge du fer II</span><span class="node-tag tag-archaeology">Archéologie</span></div>
+      <h2 class="node-title">La stèle de Tel Dan — la maison de David</h2>
+      <p class="node-body">Découverte en 1993 dans le nord d’Israël, cette inscription araméenne rédigée par un roi araméen <strong>mentionne explicitement la « maison de David »</strong> — la première confirmation archéologique de la dynastie davidique en dehors de la Bible. Pendant des décennies, certains spécialistes ont nié l’historicité de David. Cette inscription a profondément changé le débat.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://en.wikipedia.org/wiki/Tel_Dan_stele" target="_blank" rel="noopener noreferrer">📖 Wikipédia</a>
+          <a href="https://www.imj.org.il/en/collections/371077" target="_blank" rel="noopener noreferrer">🏛 Israel Museum</a>
+          <a href="https://www.biblicalarchaeology.org/daily/biblical-artifacts/artifacts-and-the-bible/the-tel-dan-inscription-the-first-historical-evidence-of-the-king-david-bible-story/" target="_blank" rel="noopener noreferrer">🔍 Biblical Archéologie Society</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="archaeology">
+    <div class="node-content"><div class="card">
+      <div class="node-number">03</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/P1120870_Louvre_st%C3%A8le_de_M%C3%A9sha_AO5066_rwk.JPG/250px-P1120870_Louvre_st%C3%A8le_de_M%C3%A9sha_AO5066_rwk.JPG" alt="La stèle de Mésha conservée au Louvre."><figcaption>La stèle de Mésha conservée au Louvre.</figcaption></figure>
+      <div class="node-date-ui"><span>~840 BCE · Âge du fer II</span><span class="node-tag tag-archaeology">Archéologie</span></div>
+      <h2 class="node-title">La stèle de Mésha — Omri, Achab et Israël</h2>
+      <p class="node-body">Cette stèle de basalte noir, conservée au <strong>Louvre à Paris</strong>, raconte la victoire du roi Mésha de Moab sur Israël — en mentionnant <strong>Omri, roi d’Israël, et son fils</strong> (généralement identifié à Achab, en lien avec 1 Rois). Le récit biblique de ce même conflit se trouve en 2 Rois 3. Les deux textes décrivent les mêmes événements depuis des points de vue opposés.</p>
+      <blockquote class="node-quote">« Omri était roi d’Israël, et il opprima Moab pendant de nombreux jours. » — stèle de Mésha</blockquote>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://en.wikipedia.org/wiki/Mesha_stele" target="_blank" rel="noopener noreferrer">📖 Wikipédia</a>
+          <a href="https://collections.louvre.fr/en/ark:/53355/cl010137705" target="_blank" rel="noopener noreferrer">🏛 Le Louvre</a>
+          <a href="https://www.biblicalarchaeology.org/daily/biblical-artifacts/artifacts-and-the-bible/the-mesha-stele-and-the-bible/" target="_blank" rel="noopener noreferrer">🔍 Analyse BAS</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="archaeology">
+    <div class="node-content"><div class="card">
+      <div class="node-number">04</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/BaruchBulla.jpg/250px-BaruchBulla.jpg" alt="Photographie largement diffusée de la bulle attribuée à Baruch ben Nérija."><figcaption>Photographie largement diffusée de la bulle attribuée à Baruch ben Nérija.</figcaption></figure>
+      <div class="node-date-ui"><span>~600 BCE · Fin de l’âge du fer</span><span class="node-tag tag-archaeology">Archéologie</span></div>
+      <h2 class="node-title">Le sceau de Baruch — le scribe de Jérémie</h2>
+      <p class="node-body">Une petite bulle d’argile portant l’inscription <strong>« Appartenant à Berekhyahu fils de Neriyahu, le scribe »</strong> — soit le nom hébreu complet de Baruch fils de Nérija, qui a mis par écrit le livre de Jérémie (Jr 36.4). Le sceau conserve même une empreinte digitale, peut-être celle de Baruch lui-même. Un personnage biblique nommé, attesté dans l’argile.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://en.wikipedia.org/wiki/Baruch_ben_Neriah" target="_blank" rel="noopener noreferrer">📖 Wikipédia</a>
+          <a href="https://www.biblicalarchaeology.org/daily/biblical-artifacts/artifacts-and-the-bible/baruch-son-of-neriah-is-real/" target="_blank" rel="noopener noreferrer">🔍 BAS — "Baruch is Real"</a>
+          <a href="https://www.imj.org.il/en" target="_blank" rel="noopener noreferrer">🏛 Israel Museum</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="archaeology">
+    <div class="node-content"><div class="card">
+      <div class="node-number">05</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Jehoiachin_Ration_Tablet.JPG/640px-Jehoiachin_Ration_Tablet.JPG" alt="Tablette de ration attribuée à l’époque de Jojakin / Jehoïakin."><figcaption>Tablette de ration attribuée à l’époque de Jojakin / Jehoïakin.</figcaption></figure>
+      <div class="node-date-ui"><span>605–586 BCE · Néo-babylonien</span><span class="node-tag tag-archaeology">Archéologie</span></div>
+      <h2 class="node-title">Les chroniques babyloniennes — la déportation</h2>
+      <p class="node-body">Des tablettes cunéiformes conservées au <strong>British Museum</strong> relatent les campagnes militaires de Nabuchodonosor II — notamment le siège de Jérusalem en 597 av. J.-C., en accord remarquable avec 2 Rois 24. Des tablettes de ration découvertes à Babylone mentionnent même des provisions pour <strong>« Yaukin, roi de Juda »</strong> (= Jojakin / Jehoïakin), corroborant directement l’exil décrit en 2 Rois 25.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://en.wikipedia.org/wiki/Babylonian_captivity" target="_blank" rel="noopener noreferrer">📖 Wikipédia</a>
+          <a href="https://www.britishmuseum.org/collection/term/x7085" target="_blank" rel="noopener noreferrer">🏛 British Museum</a>
+          <a href="https://www.livius.org/articles/misc/jehoiachin-in-babylon/" target="_blank" rel="noopener noreferrer">🔍 Livius.org — tablettes de Jehoïakin</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="archaeology">
+    <div class="node-content"><div class="card">
+      <div class="node-number">06</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Cyrus_Cylinder_detail.jpg/250px-Cyrus_Cylinder_detail.jpg" alt="Détail de l’écriture cunéiforme sur le cylindre de Cyrus."><figcaption>Détail de l’écriture cunéiforme sur le cylindre de Cyrus.</figcaption></figure>
+      <div class="node-date-ui"><span>~539 BCE · Perse achéménide</span><span class="node-tag tag-archaeology">Archéologie</span></div>
+      <h2 class="node-title">Le cylindre de Cyrus — le retour des exilés</h2>
+      <p class="node-body">Ésaïe 44–45 nomme <strong>Cyrus de Perse par son nom</strong> et annonce qu’il décréterait le retour des peuples exilés — un texte rédigé environ 150 ans avant la naissance de Cyrus. Le cylindre de Cyrus (British Museum) confirme précisément ce type de décret. Le langage d’Esdras 1 présente une proximité frappante avec celui du cylindre.</p>
+      <blockquote class="node-quote">« J’ai ramené dans ces villes sacrées… et j’ai établi pour elles des sanctuaires durables. » — cylindre de Cyrus</blockquote>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://en.wikipedia.org/wiki/Cyrus_Cylinder" target="_blank" rel="noopener noreferrer">📖 Wikipédia</a>
+          <a href="https://www.britishmuseum.org/collection/object/W_1880-0617-1941" target="_blank" rel="noopener noreferrer">🏛 British Museum</a>
+          <a href="https://artsandculture.google.com/asset/cyrus-cylinder/6QH2ZpJPy_mqtA" target="_blank" rel="noopener noreferrer">🎨 Google Arts &amp; Culture</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="manuscripts">
+    <div class="node-content"><div class="card">
+      <div class="node-number">07</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Letter_of_Aristeas_%28Vat._gr._747_f._1r%29.jpg/330px-Letter_of_Aristeas_%28Vat._gr._747_f._1r%29.jpg" alt="Manuscrit grec lié à la tradition de la Septante."><figcaption>Manuscrit grec lié à la tradition de la Septante.</figcaption></figure>
+      <div class="node-date-ui"><span>~250 BCE · Période hellénistique</span><span class="node-tag tag-manuscripts">Manuscrits</span></div>
+      <h2 class="node-title">La Septante — l’Ancien Testament était établi avant le Christ</h2>
+      <p class="node-body">La <strong>Septante (LXX)</strong> est la traduction grecque de l’Ancien Testament hébreu, réalisée à Alexandrie vers 250 av. J.-C. Son existence montre que le corpus hébreu était déjà fixé et faisant autorité des siècles avant le Nouveau Testament — et avant les événements qu’il annonce. Quand les auteurs du NT citent « les Écritures », ils s’appuient sur un texte déjà ancien de plus de 200 ans et largement diffusé.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://en.wikipedia.org/wiki/Septuagint" target="_blank" rel="noopener noreferrer">📖 Wikipédia</a>
+          <a href="https://www.sblgnt.com" target="_blank" rel="noopener noreferrer">🔍 SBL Greek NT Project</a>
+          <a href="https://ccat.sas.upenn.edu/nets/" target="_blank" rel="noopener noreferrer">🏛 NETS — LXX en anglais (UPenn)</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="manuscripts">
+    <div class="node-content"><div class="card">
+      <div class="node-number">08</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Great_Isaiah_Scroll.jpg/250px-Great_Isaiah_Scroll.jpg" alt="Le grand rouleau d’Ésaïe de Qumrân."><figcaption>Le grand rouleau d’Ésaïe de Qumrân.</figcaption></figure>
+      <div class="node-date-ui"><span>~150 BCE · Période du Second Temple</span><span class="node-tag tag-manuscripts">Manuscrits</span></div>
+      <h2 class="node-title">Les manuscrits de la mer Morte — Ésaïe n’a pas été fabriqué après coup</h2>
+      <p class="node-body">Pendant plus d’un siècle, la « critique allemande » (Wellhausen, De Wette et leurs successeurs) a soutenu que les chapitres 40–66 d’Ésaïe avaient été composés <em>après</em> l’exil babylonien — voire après le Christ — par un autre auteur (« Deutéro-Ésaïe »). Le <strong>grand rouleau d’Ésaïe de Qumrân (1QIsaᵃ), daté d’environ 150 av. J.-C.</strong>, contient pourtant le livre entier sans rupture, sans changement de main et sans coupure entre les chapitres 39 et 40. Un texte complet et ancien, bien avant le Christ. Plus de <strong>900 manuscrits</strong> ont été retrouvés — repoussant la tradition manuscrite d’environ 1 000 ans au-delà de toute copie connue auparavant.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Ressource clé — la vidéo essentielle de Tim Mackie</div>
+        <div class="links-grid">
+          <a href="https://www.youtube.com/watch?v=eaqKzYJ151Y" target="_blank" rel="noopener noreferrer">▶ Tim Mackie — Bible Project</a>
+          <a href="https://www.deadseascrolls.org.il/explore-the-archive/manuscript/1Q8-1" target="_blank" rel="noopener noreferrer">🏛 Israel Antiquities Authority</a>
+          <a href="https://en.wikipedia.org/wiki/Isaiah_scroll" target="_blank" rel="noopener noreferrer">📖 Wikipédia — rouleau d’Ésaïe</a>
+          <a href="https://artsandculture.google.com/story/the-dead-sea-scrolls/EgWBqfblT3oNJA" target="_blank" rel="noopener noreferrer">🎨 Google Arts &amp; Culture</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="manuscripts">
+    <div class="node-content"><div class="card">
+      <div class="node-number">09</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Ann_Arbor%2C_University_of_Michigan_Ms_P.Mich.inv._1570_%28Papyrus_37%29_verso_Matt_26%2C_38-52.jpg/250px-Ann_Arbor%2C_University_of_Michigan_Ms_P.Mich.inv._1570_%28Papyrus_37%29_verso_Matt_26%2C_38-52.jpg" alt="Exemple de papyrus du Nouveau Testament."><figcaption>Exemple de papyrus du Nouveau Testament.</figcaption></figure>
+      <div class="node-date-ui"><span>50–400 CE · Début de notre ère</span><span class="node-tag tag-manuscripts">Manuscrits</span></div>
+      <h2 class="node-title">Nombre de manuscrits — aucun texte antique n’approche cela</h2>
+      <p class="node-body">Le Nouveau Testament nous est parvenu à travers <strong>plus de 5 800 manuscrits grecs</strong>, auxquels s’ajoutent plus de 19 000 manuscrits dans d’autres langues — soit plus de 24 000 au total. À titre de comparaison : la <em>Guerre des Gaules</em> de César en compte 10 ; les dialogues de Platon, 7 ; l’<em>Iliade</em> d’Homère, 643. Les variantes du NT sont <strong>écrasamment mineures</strong> (orthographe, ordre des mots) — aucune doctrine centrale n’en dépend. L’écart entre la rédaction originale et la plus ancienne copie conservée est de 25 à 50 ans pour le NT, contre 700 à 1 400 ans pour d’autres classiques.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://en.wikipedia.org/wiki/New_Testament_manuscript" target="_blank" rel="noopener noreferrer">📖 Wikipédia — NT Manuscrits</a>
+          <a href="https://www.csntm.org" target="_blank" rel="noopener noreferrer">🔍 CSNTM — archive des manuscrits</a>
+          <a href="https://www.codexsinaiticus.org" target="_blank" rel="noopener noreferrer">🏛 Codex Sinaiticus en ligne</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="accuracy">
+    <div class="node-content"><div class="card">
+      <div class="node-number">10</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Bible_from_1300_%2820%29.jpg/250px-Bible_from_1300_%2820%29.jpg" alt="Bible hébraïque médiévale, image représentative du texte transmis et localisable."><figcaption>Bible hébraïque médiévale, image représentative du texte transmis et localisable.</figcaption></figure>
+      <div class="node-date-ui"><span>En continu · toutes périodes</span><span class="node-tag tag-accuracy">Précision</span></div>
+      <h2 class="node-title">Des centaines de noms et de lieux exacts</h2>
+      <p class="node-body">L’Ancien et le Nouveau Testament mentionnent <strong>plus de 60 dirigeants historiquement attestés</strong>, des centaines de lieux géographiques et des milliers de noms de personnes — presque tous vérifiés par l’archéologie. Les écrits de Luc à eux seuls évoquent <strong>32 régions, 54 villes et 9 îles</strong>, avec une précision reconnue. L’historien classique Colin Hemer a montré que les Actes contiennent des détails qu’un témoin contemporain seul pouvait connaître. La Bible est l’un des textes anciens les plus largement recoupés par l’archéologie.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://en.wikipedia.org/wiki/Historicity_of_the_Bible" target="_blank" rel="noopener noreferrer">📖 Wikipédia — historicité</a>
+          <a href="https://www.biblicalarchaeology.org/free-ebooks/top-10-discoveries-in-biblical-archaeology/" target="_blank" rel="noopener noreferrer">🔍 Top 10 des découvertes — BAS</a>
+          <a href="https://www.youtube.com/watch?v=eaqKzYJ151Y" target="_blank" rel="noopener noreferrer">▶ Vue d’ensemble par Tim Mackie</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="structure">
+    <div class="node-content"><div class="card">
+      <div class="node-number">11</div>
+      <figure class="card-image"><img src="https://chrisharrison.net/projects/bibleviz/BibleVizArc7WiderOTNTsmall.png" alt="Visualisation BibleViz de Chris Harrison montrant les renvois internes."><figcaption>Visualisation BibleViz de Chris Harrison montrant les renvois internes.</figcaption></figure>
+      <div class="node-date-ui"><span>1400 BCE – 100 CE · à travers les millénaires</span><span class="node-tag tag-structure">Structure</span></div>
+      <h2 class="node-title">Une unité sur 1 500 ans et 40 auteurs</h2>
+      <p class="node-body">La Bible a été écrite sur environ 1 500 ans par environ 40 auteurs, sur 3 continents et dans 3 langues (hébreu, araméen, grec) — et pourtant elle déploie un seul grand récit, une théologie cohérente et une architecture de renvois d’une grande finesse. Structures chiastiques, motifs typologiques et fils thématiques relient la Genèse à l’Apocalypse d’une manière difficile à réduire au hasard. Le projet <strong>BibleViz</strong> de Chris Harrison visualise 63 779 renvois internes — la densité est saisissante.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://www.chrisharrison.net/index.php/visualizations/BibleViz" target="_blank" rel="noopener noreferrer">🕸 BibleViz — 63,779 Cross-References</a>
+          <a href="https://www.youtube.com/watch?v=eaqKzYJ151Y" target="_blank" rel="noopener noreferrer">▶ Tim Mackie — l’histoire de la Bible</a>
+          <a href="https://en.wikipedia.org/wiki/Biblical_canon" target="_blank" rel="noopener noreferrer">📖 Wikipédia — canon biblique</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="structure">
+    <div class="node-content"><div class="card">
+      <div class="node-number">12</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/CAPPELLA_SISTINA_Ceiling.jpg/960px-CAPPELLA_SISTINA_Ceiling.jpg" alt="Vue d’ensemble du plafond de la chapelle Sixtine."><figcaption>Vue d’ensemble du plafond de la chapelle Sixtine.</figcaption></figure>
+      <div class="node-date-ui"><span>400 CE – Present · Ongoing</span><span class="node-tag tag-structure">Structure</span></div>
+      <h2 class="node-title">L’âme de la culture occidentale</h2>
+      <p class="node-body">De la <strong>chapelle Sixtine</strong> aux cantates de Bach, de la <em>Divine Comédie</em> de Dante aux romans de Dostoïevski, le récit biblique constitue un socle majeur de l’art, de l’architecture, de la musique, de la philosophie et du droit en Occident. Les universités, les hôpitaux et même l’argumentaire intellectuel qui a nourri l’abolition de l’esclavage portent aussi son empreinte. Il est impossible de comprendre la civilisation occidentale sans ce texte.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://artsandculture.google.com/story/the-bible-and-western-art/EgWBlLVwYTPbJA" target="_blank" rel="noopener noreferrer">🎨 Google Arts &amp; Culture</a>
+          <a href="https://www.prixm.org/" target="_blank" rel="noopener noreferrer">🔍 Prixm — Bible &amp; culture occidentale</a>
+          <a href="https://en.wikipedia.org/wiki/Cultural_influence_of_the_Bible" target="_blank" rel="noopener noreferrer">📖 Wikipédia — influence culturelle</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="reach">
+    <div class="node-content"><div class="card">
+      <div class="node-number">13</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Gutenberg_Bible%2C_Lenox_Copy%2C_New_York_Public_Library%2C_2009._Pic_02.jpg/250px-Gutenberg_Bible%2C_Lenox_Copy%2C_New_York_Public_Library%2C_2009._Pic_02.jpg" alt="Exemplaire de la Bible de Gutenberg."><figcaption>Exemplaire de la Bible de Gutenberg.</figcaption></figure>
+      <div class="node-date-ui"><span>1455 CE · début de l’époque moderne</span><span class="node-tag tag-reach">Diffusion</span></div>
+      <h2 class="node-title">La révolution Gutenberg</h2>
+      <p class="node-body">La Bible fut le <strong>premier grand livre imprimé avec des caractères mobiles</strong>. La presse de Gutenberg a transformé une tradition manuscrite copiée à la main en révolution de la communication de masse. La traduction allemande de Luther a ensuite contribué à façonner l’allemand moderne et à accélérer l’alphabétisation en Europe — une véritable démocratisation de l’information, plus de cinq siècles avant Internet.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://en.wikipedia.org/wiki/Gutenberg_Bible" target="_blank" rel="noopener noreferrer">📖 Wikipédia — Bible de Gutenberg</a>
+          <a href="https://www.bl.uk/gutenberg-bible" target="_blank" rel="noopener noreferrer">🏛 British Library</a>
+          <a href="https://en.wikipedia.org/wiki/Luther_Bible" target="_blank" rel="noopener noreferrer">📖 Wikipédia — Bible de Luther</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="reach">
+    <div class="node-content"><div class="card premium-card theme-card">
+      <div class="node-number">✶</div>
+      <figure class="card-image"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%201200%20720%27%3E%0A%3Cdefs%3E%0A%20%20%3ClinearGradient%20id%3D%27g2%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%271%27%20y2%3D%271%27%3E%0A%20%20%20%20%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%233a2e2a%27/%3E%0A%20%20%20%20%3Cstop%20offset%3D%2750%25%27%20stop-color%3D%27%236b4d3c%27/%3E%0A%20%20%20%20%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%23d2b17a%27/%3E%0A%20%20%3C/linearGradient%3E%0A%3C/defs%3E%0A%3Crect%20width%3D%271200%27%20height%3D%27720%27%20fill%3D%27url%28%23g2%29%27/%3E%0A%3Crect%20x%3D%27165%27%20y%3D%27145%27%20width%3D%27870%27%20height%3D%27440%27%20rx%3D%2724%27%20fill%3D%27%23f6eedb%27%20opacity%3D%270.92%27/%3E%0A%3Crect%20x%3D%27220%27%20y%3D%27195%27%20width%3D%27760%27%20height%3D%27340%27%20rx%3D%2716%27%20fill%3D%27%23fffaf0%27%20stroke%3D%27%23b08b58%27%20stroke-width%3D%275%27/%3E%0A%3Cpath%20d%3D%27M600%20185%20L600%20535%27%20stroke%3D%27%23ccb085%27%20stroke-width%3D%274%27/%3E%0A%3Cpath%20d%3D%27M300%20245%20H500%20M300%20285%20H500%20M300%20325%20H500%20M300%20365%20H500%20M300%20405%20H500%20M300%20445%20H500%27%20stroke%3D%27%23c6b18d%27%20stroke-width%3D%278%27%20stroke-linecap%3D%27round%27/%3E%0A%3Cpath%20d%3D%27M700%20245%20H900%20M700%20285%20H900%20M700%20325%20H900%20M700%20365%20H900%20M700%20405%20H900%20M700%20445%20H900%27%20stroke%3D%27%23c6b18d%27%20stroke-width%3D%278%27%20stroke-linecap%3D%27round%27/%3E%0A%3Cpath%20d%3D%27M140%20530%20C210%20470%2C%20260%20520%2C%20310%20470%20C350%20430%2C%20390%20420%2C%20420%20445%20C460%20478%2C%20460%20548%2C%20395%20585%20C335%20620%2C%20260%20614%2C%20205%20580%20C155%20549%2C%20128%20547%2C%20140%20530Z%27%20fill%3D%27%23c1563d%27%20opacity%3D%270.9%27/%3E%0A%3Cpath%20d%3D%27M180%20555%20C220%20520%2C%20248%20542%2C%20280%20515%20C308%20491%2C%20338%20485%2C%20360%20502%20C386%20524%2C%20387%20571%2C%20346%20596%20C309%20618%2C%20261%20614%2C%20227%20594%20C194%20575%2C%20173%20570%2C%20180%20555Z%27%20fill%3D%27%23f6c46a%27%20opacity%3D%270.92%27/%3E%0A%3Ccircle%20cx%3D%27915%27%20cy%3D%27190%27%20r%3D%2748%27%20fill%3D%27%23f4d8a2%27%20opacity%3D%270.35%27/%3E%0A%3Ccircle%20cx%3D%27975%27%20cy%3D%27235%27%20r%3D%2716%27%20fill%3D%27%23fffaf0%27%20opacity%3D%270.7%27/%3E%0A%3C/svg%3E" alt="Illustration symbolique d’une Bible transmise malgré l’opposition et la persécution."><figcaption>Une image symbolique pour évoquer transmission, interdictions et persévérance.</figcaption></figure>
+      <div class="node-date-ui"><span>XVIe siècle et au-delà · tensions et transmission</span><span class="node-tag tag-reach">Paradoxe</span></div>
+      <h2 class="node-title">La Bible : le livre le plus combattu, et pourtant le plus lu</h2>
+      <p class="node-body">L’histoire de la Bible n’est pas seulement celle de sa copie et de sa diffusion. C’est aussi celle d’un livre parfois <strong>interdit, brûlé, censuré, confisqué ou surveillé</strong>. Dans plusieurs périodes de l’histoire européenne, notamment dans des contextes de fortes tensions religieuses, lire la Bible hors du cadre autorisé pouvait exposer à de lourdes sanctions.</p>
+      <p class="node-body">Le monde protestant a gardé une mémoire vive de ces oppositions. À Montauban, par exemple, l’histoire locale rappelle combien la lecture biblique, la conscience religieuse et la liberté de culte ont pu être des enjeux concrets, parfois coûteux. Et ce constat n’appartient pas seulement au passé : dans certains pays aujourd’hui encore, posséder ou diffuser une Bible peut exposer à un risque réel.</p>
+      <div class="theme-note">Le paradoxe demeure : <strong>malgré l’opposition, la Bible reste l’un des livres les plus diffusés et lus au monde</strong>, transmis de génération en génération, souvent avec courage et fidélité.</div>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ En savoir plus</div>
+        <div class="links-grid">
+          <a href="PERSECUTION_HISTORY_URL" target="_blank" rel="noopener noreferrer">🕯 Histoire des persécutions</a>
+          <a href="OPEN_DOORS_URL" target="_blank" rel="noopener noreferrer">🌍 Portes Ouvertes</a>
+          <a href="MONTAUBAN_MUSEUM_URL" target="_blank" rel="noopener noreferrer">🏛 Mémoire locale — Montauban</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="accuracy">
+    <div class="node-content"><div class="card">
+      <div class="node-number">14</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Google_Translate_logo.svg/512px-Google_Translate_logo.svg.png" alt="Icône de Google Translate, utilisée ici comme image représentative de la traduction automatique."><figcaption>Icône de Google Translate, utilisée ici comme image représentative de la traduction automatique.</figcaption></figure>
+      <div class="node-date-ui"><span>1990s – Present · ère numérique</span><span class="node-tag tag-accuracy">Précision</span></div>
+      <h2 class="node-title">La pierre de Rosette de la traduction automatique</h2>
+      <p class="node-body">Parce que la Bible est le texte le plus traduit au monde — avec des versions parallèles dans des milliers de couples de langues — elle a servi de <strong>jeu de données majeur pour les premiers systèmes de traduction automatique</strong>, y compris dans des recherches fondatrices chez IBM puis dans l’écosystème qui a nourri Google Translate. Sa structure multilingue parallèle a littéralement aidé les machines à apprendre à faire passer la pensée humaine d’une famille de langues à l’autre. Le même texte qui a conservé l’histoire ancienne contribue désormais à façonner l’intelligence artificielle.</p>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://en.wikipedia.org/wiki/Statistical_machine_translation" target="_blank" rel="noopener noreferrer">📖 Wikipédia — traduction automatique</a>
+          <a href="https://www.unfoldingword.org" target="_blank" rel="noopener noreferrer">🔍 UnfoldingWord — traduction biblique par IA</a>
+          <a href="https://www.wycliffe.org/about/why" target="_blank" rel="noopener noreferrer">🌍 Wycliffe Bible Translators</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+  <article class="node" data-category="reach">
+    <div class="node-content"><div class="card">
+      <div class="node-number">15</div>
+      <figure class="card-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/English_Bible_translations.jpg/453px-English_Bible_translations.jpg" alt="Dos de plusieurs traductions de la Bible, comme image représentative de sa diffusion multilingue."><figcaption>Dos de plusieurs traductions de la Bible, comme image représentative de sa diffusion multilingue.</figcaption></figure>
+      <div class="node-date-ui"><span>En continu · à toute époque</span><span class="node-tag tag-reach">Diffusion</span></div>
+      <h2 class="node-title">Le texte le plus traduit de l’histoire humaine</h2>
+      <p class="node-body">La Bible a été traduite, en totalité ou en partie, dans <strong>plus de 3 600 langues</strong>, touchant environ 6 milliards de personnes. Aucun autre texte n’approche ce niveau — l’œuvre la plus traduite ensuite (<em>Pinocchio</em>) compte environ 300 traductions. Wycliffe estime qu’il existe autour de 7 000 langues ; la traduction assistée par IA accélère désormais l’effort pour atteindre les groupes linguistiques restants.</p>
+      <div class="chart-box">
+        <div class="chart-title">Comparaison des traductions — textes complets ou substantiels</div>
+        <div class="chart-row">
+          <div class="chart-label-row"><span>La Bible</span><span>3,600+</span></div>
+          <div class="bar-bg"><div class="bar-fill" data-width="100" style="background: var(--reach);"></div></div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-label-row"><span>Pinocchio</span><span>~300</span></div>
+          <div class="bar-bg"><div class="bar-fill" data-width="8" style="background: #C8C4BC;"></div></div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-label-row"><span>Don Quixote</span><span>~140</span></div>
+          <div class="bar-bg"><div class="bar-fill" data-width="4" style="background: #C8C4BC;"></div></div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-label-row"><span>L’Iliade</span><span>~100</span></div>
+          <div class="bar-bg"><div class="bar-fill" data-width="2.8" style="background: #C8C4BC;"></div></div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-label-row"><span>Harry Potter</span><span>85</span></div>
+          <div class="bar-bg"><div class="bar-fill" data-width="2.4" style="background: #C8C4BC;"></div></div>
+        </div>
+      </div>
+      <div class="go-deeper">
+        <div class="go-deeper-label">↳ Pour aller plus loin</div>
+        <div class="links-grid">
+          <a href="https://www.wycliffe.org/about/why" target="_blank" rel="noopener noreferrer">🌍 Wycliffe Bible Translators</a>
+          <a href="https://www.unfoldingword.org" target="_blank" rel="noopener noreferrer">🔍 UnfoldingWord — traduction par IA</a>
+          <a href="https://en.wikipedia.org/wiki/Bible_translations" target="_blank" rel="noopener noreferrer">📖 Wikipédia — traductions de la Bible</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="node-dot"></div><div class="node-spacer"></div>
+  </article>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="site-footer-top">
+      <div class="footer-note">Bible ✦ Parcours</div>
+      <a class="footer-home-link" href="./index.html" aria-label="Retour à l’accueil">Accueil</a>
+    </div>
+    <div class="footer-quotes" aria-label="Citations inspirantes à vérifier">
+      <figure class="footer-quote-card">
+        <blockquote>[CITATION_VICTOR_HUGO_A_VERIFIER] « La Bible est un livre qui a fait l’homme. »</blockquote>
+        <figcaption>
+          <span class="footer-quote-author">Victor Hugo</span>
+          <small class="footer-quote-ref">Formulation à confirmer</small>
+        </figcaption>
+      </figure>
+      <figure class="footer-quote-card">
+        <blockquote>[CITATION_GANDHI_A_VERIFIER] “I like your Christ, I do not like your Christians. Your Christians are so unlike your Christ.”</blockquote>
+        <figcaption>
+          <span class="footer-quote-author">Gandhi</span>
+          <small class="footer-quote-ref">Formulation à confirmer</small>
+        </figcaption>
+      </figure>
+    </div>
+    <div class="footer-bottom">
+      <p>Une frise sobre pour relier histoire, texte et transmission.</p>
+      <p class="footer-signature">Lecture · repères · profondeur</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nodes = document.querySelectorAll('.node');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        entry.target.querySelectorAll('.bar-fill').forEach(bar => {
+          setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 250);
+        });
+      }
+    });
+  }, { threshold: 0.12 });
+  nodes.forEach(n => observer.observe(n));
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      nodes.forEach(node => {
+        node.classList.toggle('hidden-filter', filter !== 'all' && node.dataset.category !== filter);
+      });
+    });
+  });
+</script>
+</body>
+</html>
